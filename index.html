@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Radhika ❤️</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500&family=Playfair+Display:wght@600&family=Poppins:wght@300&display=swap" rel="stylesheet">
+
+<style>
+body {
+  margin: 0;
+  background: black;
+  color: white;
+  font-family: 'Poppins', sans-serif;
+  overflow: hidden;
+  text-align: center;
+}
+
+/* SCREEN */
+.screen {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+/* HEADING */
+h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 34px;
+}
+
+/* COUNTDOWN */
+#countdown {
+  font-size: 28px;
+  margin-top: 20px;
+}
+
+/* BUTTON */
+#openBtn {
+  display: none;
+  margin-top: 20px;
+  padding: 12px 25px;
+  border-radius: 30px;
+  border: none;
+  background: #ff4d6d;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* SURPRISE */
+#surprise {
+  display: none;
+}
+
+/* BLUR BACKGROUND */
+.bg-blur {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(25px);
+  z-index: -3;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+/* ORIGINAL IMAGE */
+.bg-img {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 100vw;
+  max-height: 100vh;
+  width: auto;
+  height: auto;
+  z-index: -2;
+  opacity: 0;
+  transition: opacity 0.8s ease, transform 6s ease;
+}
+
+/* ZOOM EFFECT */
+.bg-img.show {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1.05);
+}
+
+/* OVERLAY */
+.overlay {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.4);
+  z-index: -1;
+}
+
+/* TEXT */
+.text {
+  font-family: 'Cinzel', serif;
+  font-size: 24px;
+  padding: 20px;
+  white-space: pre-line;
+  text-shadow: 0 0 10px rgba(255,255,255,0.4);
+}
+
+/* CURSOR */
+.cursor {
+  display: inline-block;
+  width: 3px;
+  background: white;
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- COUNTDOWN -->
+<div id="countScreen" class="screen">
+  <h2>🎂 Happy Birthday 🎂</h2>
+  <div id="countdown">Loading...</div>
+  <button id="openBtn">Tap to Open 💌</button>
+</div>
+
+<!-- SURPRISE -->
+<div id="surprise" class="screen">
+  <div id="content"></div>
+</div>
+
+<audio id="music" loop>
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+
+/* 🎂 DATE */
+let birthday = new Date("May 3, 2026 00:00:00").getTime();
+
+let timer = setInterval(updateCountdown, 1000);
+
+function updateCountdown() {
+  let now = new Date().getTime();
+  let distance = birthday - now;
+
+  let el = document.getElementById("countdown");
+  let btn = document.getElementById("openBtn");
+
+  if (distance <= 0) {
+    clearInterval(timer);
+    el.innerHTML = "🎉 It's Your Day 💖";
+    btn.style.display = "inline-block";
+    return;
+  }
+
+  let d = Math.floor(distance / (1000*60*60*24));
+  let h = Math.floor((distance % (1000*60*60*24)) / (1000*60*60));
+  let m = Math.floor((distance % (1000*60*60)) / (1000*60));
+  let s = Math.floor((distance % (1000*60)) / 1000);
+
+  el.innerHTML = d + "d : " + h + "h : " + m + "m : " + s + "s";
+}
+
+/* START */
+document.getElementById("openBtn").addEventListener("click", startSurprise);
+
+/* STEPS */
+let steps = [
+  { text: "Happy Birthday ❤️" },
+  { img: "photo1.jpg" },
+  { text: "You are the most special person in my life..." },
+  { img: "photo2.jpg" },
+  { text: "I may not say it always...\nBut you mean a lot to me 💖" },
+  { img: "photo3.jpg" },
+  { text: "Stay happy forever ♾️" }
+];
+
+let i = 0;
+let currentImg, currentBlur;
+
+/* START SURPRISE */
+function startSurprise() {
+  document.getElementById("countScreen").style.display = "none";
+  document.getElementById("surprise").style.display = "flex";
+
+  document.getElementById("music").play().catch(()=>{});
+
+  showNext();
+}
+
+/* SHOW STEP */
+function showNext() {
+  let content = document.getElementById("content");
+  content.innerHTML = "";
+
+  let step = steps[i];
+
+  // remove old images smoothly
+  if (currentImg) {
+    currentImg.style.opacity = "0";
+    setTimeout(() => currentImg.remove(), 800);
+  }
+  if (currentBlur) {
+    currentBlur.style.opacity = "0";
+    setTimeout(() => currentBlur.remove(), 800);
+  }
+
+  if (step.img) {
+    // blur background
+    let blur = document.createElement("img");
+    blur.src = step.img;
+    blur.className = "bg-blur";
+    document.body.appendChild(blur);
+    setTimeout(() => blur.style.opacity = "1", 50);
+    currentBlur = blur;
+
+    // main image
+    let img = document.createElement("img");
+    img.src = step.img;
+    img.className = "bg-img";
+    document.body.appendChild(img);
+
+    setTimeout(() => {
+      img.classList.add("show");
+    }, 50);
+
+    currentImg = img;
+  }
+
+  let overlay = document.createElement("div");
+  overlay.className = "overlay";
+  content.appendChild(overlay);
+
+  if (step.text) {
+    let div = document.createElement("div");
+    div.className = "text";
+    content.appendChild(div);
+
+    typeText(div, step.text, () => {
+      setTimeout(next, 2000);
+    });
+  } else {
+    setTimeout(next, 3000);
+  }
+}
+
+function next() {
+  i++;
+  if (i < steps.length) showNext();
+}
+
+/* TYPING EFFECT */
+function typeText(el, text, cb) {
+  let k = 0;
+  function type() {
+    if (k < text.length) {
+      el.innerHTML = text.substring(0,k+1) + '<span class="cursor"></span>';
+      let speed = (text[k] === "." || text[k] === "\n") ? 200 : 40;
+      k++;
+      setTimeout(type, speed);
+    } else {
+      el.innerHTML = text;
+      cb();
+    }
+  }
+  type();
+}
+
+</script>
+
+</body>
+</html>
